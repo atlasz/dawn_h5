@@ -1,0 +1,82 @@
+
+        private onAssetsLoaded(err: any, root: any): void {
+            console.log("onAssetsLoaded");
+            if (err)
+                throw err;
+            // Obtain a message type
+            var pb: any = root.lookup("chat.ChatInfo");
+            console.log(root);
+            console.log(pb)
+            // Create a new message
+            var message: any = pb.create(
+                {
+                    playerName: "AwesomeString"
+                });
+
+            console.log(message);
+            var errMsg: any = pb.verify(message);
+            if (errMsg)
+                throw Error(errMsg);
+
+            // Encode a message to an Uint8Array (browser) or Buffer (node)
+            game.buffer = pb.encode(message).finish();
+            // ... do something with buffer
+          
+            // this.socket.send(buffer.buffer);
+            // this.socket.send("AAA");
+            /*for (var i: number = 0; i < message.length; ++i) {
+				this.output.writeByte(message[i]);
+			}*/
+            // Or, encode a plain object
+            /*var buffer: any = pb.encode(
+                {
+                    playerName: "AwesomeString"
+                }).finish();*/
+            // ... do something with buffer
+
+            // Decode an Uint8Array (browser) or Buffer (node) to a message
+            var message: any = pb.decode(game.buffer);
+            //console.log(message);
+
+            game.connect();
+        }
+
+        private connect(): void {
+
+            this.socket = new Socket();
+
+            console.log("buffer: " + game.buffer);
+
+            //this.socket.connect("echo.websocket.org", 80);
+            this.socket.connectByUrl("ws://localhost:8888");
+
+            this.output = this.socket.output;
+
+            this.socket.on(Event.OPEN, this, this.onSocketOpen);
+            this.socket.on(Event.CLOSE, this, this.onSocketClose);
+            this.socket.on(Event.MESSAGE, this, this.onMessageReveived);
+            this.socket.on(Event.ERROR, this, this.onConnectError);
+        }
+
+        private onSocketOpen(): void {
+            console.log("Connected");
+
+            var pb: any = Browser.window.protobuf;
+            game.socket.send(game.buffer);
+            console.log("buffer: " + game.buffer);
+            game.socket.flush();
+        }
+
+        private onSocketClose(): void {
+            console.log("Socket closed");
+        }
+
+        private onMessageReveived(message: any): void {
+            console.log("Message from server:");
+
+            this.socket.input.clear();
+        }
+
+        private onConnectError(e: Event): void {
+            console.log("error");
+        }
