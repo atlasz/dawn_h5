@@ -14,6 +14,7 @@ module laya {
         private output: Byte;
         private buffer: any;
         private m_processStep: number = 0;
+        private index:number = 0;
 
         constructor() {
             Laya.init(600, 400);
@@ -22,18 +23,26 @@ module laya {
             //pb.load("data/chat.proto", this.onAssetsLoaded);
             //this.connect();
             this.process();
+            //Laya.timer.loop(1000, this, this.animateTimeBased);
         }
+
+        private animateTimeBased():void
+        {
+            this.index++;
+            console.log("tick index: " + this.index);
+        }
+
         //tmpcode
         private process():void
         {
             switch(this.m_processStep)
             {
-                case 0:
+                case 0://load resource
                 ProtoLoader.getInstance().init();
                 ProtoLoader.getInstance().addEventListener("LoadComplete", this.onProtoLoaderComplete);
                 this.m_processStep++;
                 break;
-                case 1:
+                case 1://init networkmanager
                 NetworkManager.getInstance().init();
                 NetworkManager.getInstance().connect();
                 NetworkManager.getInstance().addEventListener("connect", this.onConnected);
@@ -50,13 +59,13 @@ module laya {
 
         private handleMsg1(message:any):void
         {
-            var pb:any = ProtoLoader.getInstance().getPbObject("chat.ChatInfo");
+            var pb:any = ProtoLoader.getInstance().getPbObject("ChatInfo");
             var aaa:any = pb.decode(message);
             console.log("handleMsg1: " + aaa.playerName);
         }
         private handleMsg2(message:any):void
         {
-            var pb:any = ProtoLoader.getInstance().getPbObject("chat.ChatInfo");
+            var pb:any = ProtoLoader.getInstance().getPbObject("ChatInfo");
             var aaa:any = pb.decode(message);
             console.log("handleMsg2: " + aaa.playerName);
         }
@@ -82,7 +91,7 @@ module laya {
 
         private sendTempleMsg():void
         {
-            var pb:any = ProtoLoader.getInstance().getPbObject("chat.ChatInfo");
+            var pb:any = ProtoLoader.getInstance().getPbObject("ChatInfo");
             //console.log(pb);
            
             //tmpcode

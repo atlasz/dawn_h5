@@ -25,7 +25,7 @@ module dawn
 
         public init():void
         {
-            this.m_protojs.load("data/chat.proto", this.onPbLoaded);
+            this.m_protojs.load("data/allinone.proto", this.onPbLoaded);
         }
 
         public addEventListener(typeStr:string, listenerFunc:Function):void
@@ -54,10 +54,36 @@ module dawn
             console.log("onPbLoaded");
             if (err)
                 throw err;
-            // Obtain a message type
-            var pb: any = root.lookup("chat.ChatInfo");
-            ProtoLoader.getInstance().m_dicCfgs.add("chat.ChatInfo", pb);
+            //register all type
+            //a way to find all type
+            //i don't know whether it's the offical method to get all type ^_^
+            root.resolveAll();
+            var typeReflection:any = root.nested.dawnpb._nestedArray;
+            for(var idxType = 0; idxType < typeReflection.length; ++idxType)
+            {
+                var oneType = typeReflection[idxType];
+                ProtoLoader.getInstance().m_dicCfgs.add(oneType.name, oneType);
+            }
 
+            //test the nested construct
+            /*
+            var vec2:any = ProtoLoader.getInstance().m_dicCfgs["PBVector2"];
+            var message: any = vec2.create(
+            {
+                x: 1.5,
+                y: 2.5
+            });
+            console.log(message);
+            var moveMsg:any = ProtoLoader.getInstance().m_dicCfgs["MoveMsg"];
+            var move:any = moveMsg.create(
+                {
+                    position:message,
+                    speed:2.5,
+                    direction:vec2.create({x:-1,y:1})
+                }
+            )
+            console.log(move.direction);*/
+            
             var evt:Event = new Event("LoadComplete", null);
             ProtoLoader.getInstance().m_loadEvtDispatcher.dispatchEvent(evt);            
         }

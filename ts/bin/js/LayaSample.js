@@ -7,12 +7,18 @@ var laya;
     var GameMain = (function () {
         function GameMain() {
             this.m_processStep = 0;
+            this.index = 0;
             Laya.init(600, 400);
             var pb = Browser.window.protobuf;
             //pb.load("data/chat.proto", this.onAssetsLoaded);
             //this.connect();
             this.process();
+            //Laya.timer.loop(1000, this, this.animateTimeBased);
         }
+        GameMain.prototype.animateTimeBased = function () {
+            this.index++;
+            console.log("tick index: " + this.index);
+        };
         //tmpcode
         GameMain.prototype.process = function () {
             switch (this.m_processStep) {
@@ -36,12 +42,12 @@ var laya;
             }
         };
         GameMain.prototype.handleMsg1 = function (message) {
-            var pb = ProtoLoader.getInstance().getPbObject("chat.ChatInfo");
+            var pb = ProtoLoader.getInstance().getPbObject("ChatInfo");
             var aaa = pb.decode(message);
             console.log("handleMsg1: " + aaa.playerName);
         };
         GameMain.prototype.handleMsg2 = function (message) {
-            var pb = ProtoLoader.getInstance().getPbObject("chat.ChatInfo");
+            var pb = ProtoLoader.getInstance().getPbObject("ChatInfo");
             var aaa = pb.decode(message);
             console.log("handleMsg2: " + aaa.playerName);
         };
@@ -59,7 +65,7 @@ var laya;
             }
         };
         GameMain.prototype.sendTempleMsg = function () {
-            var pb = ProtoLoader.getInstance().getPbObject("chat.ChatInfo");
+            var pb = ProtoLoader.getInstance().getPbObject("ChatInfo");
             //console.log(pb);
             //tmpcode
             var message = pb.create({
