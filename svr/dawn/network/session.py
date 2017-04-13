@@ -2,6 +2,7 @@ import dawn.common.common
 
 class Session():
 	uid = 0
+	sid = 0
 	socket = []
 	def __init__(self, uid, socket):
 		self.uid = uid

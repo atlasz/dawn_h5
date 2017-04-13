@@ -1,37 +1,56 @@
-var dawn;
-(function (dawn) {
-    var Browser = Laya.Browser;
-    var ProtoLoader = (function () {
-        function ProtoLoader() {
-            this.m_dicCfgs = new dawn.Dictionary([]);
-            this.m_protojs = Browser.window.protobuf;
-            this.m_loadEvtDispatcher = new dawn.EventDispatcher();
-            if (ProtoLoader.m_instance) {
+module dawn
+{
+    import Browser = Laya.Browser;
+
+    export class ProtoLoader
+    {
+        private static m_instance:ProtoLoader = new ProtoLoader();
+        private m_dicCfgs:Dictionary = new Dictionary([]);
+        private m_protojs:any = Browser.window.protobuf;
+        private m_loadEvtDispatcher:EventDispatcher = new EventDispatcher();
+        
+        constructor()
+        {
+            if(ProtoLoader.m_instance)
+            {
                 throw new Error("Error: Instantiation failed: Use ProtoLoader.getInstance() instead of new.");
             }
             ProtoLoader.m_instance = this;
         }
-        ProtoLoader.getInstance = function () {
+
+        public static getInstance():ProtoLoader
+        {
             return ProtoLoader.m_instance;
-        };
-        ProtoLoader.prototype.init = function () {
+        }
+
+        public init():void
+        {
             this.m_protojs.load("data/allinone.proto", this.onPbLoaded);
-        };
-        ProtoLoader.prototype.addEventListener = function (typeStr, listenerFunc) {
+        }
+
+        public addEventListener(typeStr:string, listenerFunc:Function):void
+        {
             this.m_loadEvtDispatcher.addEventListener(typeStr, listenerFunc);
-        };
-        ProtoLoader.prototype.removeEventListener = function (typeStr, listenerFunc) {
+        }
+
+        public removeEventListener(typeStr:string, listenerFunc:Function):void
+        {
             this.m_loadEvtDispatcher.removeEventListener(typeStr, listenerFunc);
-        };
-        ProtoLoader.prototype.getPbObject = function (type) {
-            if (this.m_dicCfgs.containsKey(type)) {
+        }
+
+        public getPbObject(type:string):any
+        {
+            if(this.m_dicCfgs.containsKey(type))
+            {
                 return this.m_dicCfgs[type];
             }
-            else {
+            else
+            {
                 return null;
             }
-        };
-        ProtoLoader.prototype.onPbLoaded = function (err, root) {
+        }
+
+        private onPbLoaded(err: any, root: any): void {
             console.log("onPbLoaded");
             if (err)
                 throw err;
@@ -39,11 +58,13 @@ var dawn;
             //a way to find all type
             //i don't know whether it's the offical method to get all type ^_^
             root.resolveAll();
-            var typeReflection = root.nested.dawnpb._nestedArray;
-            for (var idxType = 0; idxType < typeReflection.length; ++idxType) {
+            var typeReflection:any = root.nested.dawnpb._nestedArray;
+            for(var idxType = 0; idxType < typeReflection.length; ++idxType)
+            {
                 var oneType = typeReflection[idxType];
                 ProtoLoader.getInstance().m_dicCfgs.add(oneType.name, oneType);
             }
+
             //test the nested construct
             /*
             var vec2:any = ProtoLoader.getInstance().m_dicCfgs["PBVector2"];
@@ -61,13 +82,12 @@ var dawn;
                     direction:vec2.create({x:-1,y:1})
                 }
             )
-            console.log(move.direction);*/
-            var evt = new dawn.Event("LoadComplete", null);
-            ProtoLoader.getInstance().m_loadEvtDispatcher.dispatchEvent(evt);
-        };
-        return ProtoLoader;
-    }());
-    ProtoLoader.m_instance = new ProtoLoader();
-    dawn.ProtoLoader = ProtoLoader;
-})(dawn || (dawn = {}));
-//# sourceMappingURL=ProtoLoader.js.map
+            console.log(move.direction);
+            var cmd:any = ProtoLoader.getInstance().m_dicCfgs["Command"];
+            console.log(cmd.CmdType.CONN_CMD_START_REQ);*/
+            
+            var evt:Event = new Event("LoadComplete", null);
+            ProtoLoader.getInstance().m_loadEvtDispatcher.dispatchEvent(evt);            
+        }
+    }
+}
