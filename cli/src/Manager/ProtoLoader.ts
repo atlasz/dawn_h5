@@ -63,6 +63,7 @@ module dawn
             {
                 var oneType = typeReflection[idxType];
                 ProtoLoader.getInstance().m_dicCfgs.add(oneType.name, oneType);
+                console.log(oneType.name, oneType);
             }
 
             //test the nested construct

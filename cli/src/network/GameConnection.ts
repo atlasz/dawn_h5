@@ -11,14 +11,17 @@ module dawn
         private m_connectedEvt:Event= new Event("connect", null);
         private m_disconnectedEvt:Event = new Event("disconnect", null);
         private m_readBuffer:Byte = new Byte();
-
+        private cmd:any;
+        private conn:GameConnection;
         constructor()
         {
-            this.m_socket = new Socket();            
+            this.m_socket = new Socket(); 
+            this.conn = this;       
         }
 
         public init():void
         {
+            this.cmd = ProtoLoader.getInstance().getPbObject("Command");   
             this.m_socket.on(LayaEvent.OPEN, this, this.onSocketOpen);
             this.m_socket.on(LayaEvent.CLOSE, this, this.onSocketClose);
             this.m_socket.on(LayaEvent.MESSAGE, this, this.onMessageReveived);
@@ -61,8 +64,10 @@ module dawn
         public pack(cmd:number, message:any):Byte
         {
             var buf:Byte = new Byte();
-            buf.writeInt32(cmd);
+            buf.writeInt32(99);
+            buf.writeInt32(NetworkManager.getInstance().userId);
             buf.writeInt32(message.length);
+            buf.writeInt32(cmd);
             buf.writeArrayBuffer(message);
             return buf;
         }
@@ -70,19 +75,67 @@ module dawn
         public unpack(message:any):void
         {
             //console.log(typeof(message));
+            
             this.m_readBuffer.clear();
             this.m_readBuffer.writeUTFBytes(message);
+            if(this.m_readBuffer.length < 8)
+            {
+                console.log("wrong bytes");
+                return;
+            }
             this.m_readBuffer.pos = 0;
 
-            var msgType:number = this.m_readBuffer.getInt32();
-            console.log(this.m_readBuffer.pos);
-            var length:number = this.m_readBuffer.getInt32();
-            console.log(this.m_readBuffer.pos);
-            var protobuf:any = this.m_readBuffer.getUint8Array(this.m_readBuffer.pos, length);
-            /*var pb:any = ProtoLoader.getInstance().getPbObject("chat.ChatInfo");
-            var aaa:any = pb.decode(protobuf);
-            console.log(aaa);*/
-            NetworkManager.getInstance().handleMsg(msgType, protobuf);
+            var cmdType:number = this.m_readBuffer.getInt32();
+            var userId:number = this.m_readBuffer.getInt32();
+
+            switch(cmdType)
+            {
+                case this.conn.cmd.CmdType.CONN_CMD_START_RSP:
+                console.log("CONN_CMD_START_RSP userId: " + userId);
+                break;
+                case this.conn.cmd.CmdType.CONN_CMD_STOP_RSP:
+                console.log("CONN_CMD_STOP_RSP");
+                break;
+                case this.conn.cmd.CmdType.CONN_CMD_HEARTBEAT:
+                console.log("CONN_CMD_HEARTBEAT");
+                break;
+                default:
+                this.handleMsg(this.m_readBuffer);
+                break;
+            }               
+        }
+
+        private handleMsg(buffer:Byte):void
+        {
+            while(buffer.pos < buffer.buffer.byteLength)
+            {
+
+                var length:number = buffer.getInt32();
+                var msgType:number = buffer.getInt32();
+                var protobuf:any = buffer.getUint8Array(buffer.pos, length);
+                NetworkManager.getInstance().handleMsg(msgType, protobuf);
+            }   
+        }
+
+        public doConnStart():void
+        {
+            var buf:Byte = new Byte();
+            buf.writeInt32(this.conn.cmd.CmdType.CONN_CMD_START_REQ);
+            var uid:number = NetworkManager.getInstance().userId; 
+            buf.writeInt32(uid);
+            console.log("doConnStart uid:" + uid);
+            this.send(buf.buffer);
+        }
+
+        public doConnStop():void
+        {
+            var buf:Byte = new Byte();
+            buf.writeInt32(this.conn.cmd.CmdType.CONN_CMD_STOP_REQ);
+            console.log("doConnStop cmd:" + this.conn.cmd.CmdType.CONN_CMD_STOP_REQ);
+            var uid:number = NetworkManager.getInstance().userId; 
+            buf.writeInt32(uid);
+            console.log("doConnStop uid:" + uid);
+            this.send(buf.buffer);
         }
     }
 }

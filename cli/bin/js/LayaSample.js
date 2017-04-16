@@ -1,15 +1,14 @@
 var laya;
 (function (laya) {
-    var Browser = Laya.Browser;
     var ProtoLoader = dawn.ProtoLoader;
     var NetworkManager = dawn.NetworkManager;
+    var Battle = dawn.Battle;
     // 程序入口
     var GameMain = (function () {
         function GameMain() {
             this.m_processStep = 0;
             this.index = 0;
-            Laya.init(600, 400);
-            var pb = Browser.window.protobuf;
+            Laya.init(1000, 800);
             //pb.load("data/chat.proto", this.onAssetsLoaded);
             //this.connect();
             this.process();
@@ -34,9 +33,16 @@ var laya;
                     this.m_processStep++;
                     break;
                 case 2:
-                    this.sendTempleMsg();
-                    NetworkManager.getInstance().registerCMD(1, this.handleMsg1);
-                    NetworkManager.getInstance().registerCMD(1, this.handleMsg2);
+                    // this.sendTempleMsg();
+                    NetworkManager.getInstance().DoConnStart();
+                    // NetworkManager.getInstance().registerCMD(1, this.handleMsg1);
+                    // NetworkManager.getInstance().registerCMD(1, this.handleMsg2);           
+                    this.m_processStep++;
+                    this.process();
+                    break;
+                case 3:
+                    NetworkManager.getInstance().DoConnStop();
+                    var battle = new Battle();
                     this.m_processStep++;
                     break;
             }

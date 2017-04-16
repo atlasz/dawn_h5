@@ -10,16 +10,33 @@ class NetReader(object):
 		self.buf = message
 		self.size = len(self.buf)
 	def ReadInt(self):
-		if self.pos + 4 >= self.size or self.IsReadDone():
+		if self.CheckCapacity(4) and not self.IsReadDone():
+			val = struct.unpack("i", self.buf[self.pos:self.pos + 4])
+			self.pos += 4
+			return val[0]
+		else:
+			print "check false"
 			return 0
-		val = struct.unpack("i", self.buf[self.pos:self.pos + 4])
-		self.pos += 4
-		return val[0]
 	def ReadProto(self, protoType):
 		message = self.buf[self.pos:self.size]
 		protoType.ParseFromString(message)
+
+	def ReadBytes(self, bytelen):
+		if self.CheckCapacity(bytelen):
+			return ""
+		bytes = self.buf[self.pos:self.pos + bytelen]
+		self.pos += bytelen
+		return bytes
+
 	def IsReadDone(self):
+		print "IsReadDone pos: %d size: %d " %(self.pos, self.size)
 		return self.pos >= self.size
+
+	def CheckCapacity(self, bytelen):
+		if self.pos + bytelen > self.size:
+			print "pos %d bytelen %d size %d"%(self.pos, bytelen, self.size)
+			return False
+		return True
 
 class NetWriter(object):
 	"""docstring for NetWriter"""
@@ -35,4 +52,6 @@ class NetWriter(object):
 		message = protoType.SerializeToString()
 		self.buf += message
 		self.pos += len(message)
+	def GetBytes(self):
+		return self.buf[0:self.pos]
 		

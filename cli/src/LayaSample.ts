@@ -7,6 +7,7 @@ module laya {
     import ProtoLoader = dawn.ProtoLoader;
     import DispatchEvt = dawn.Event;
     import NetworkManager = dawn.NetworkManager;
+    import Battle = dawn.Battle;
     // 程序入口
     class GameMain {
         //private ProtoBuf:any = Browser.window.ProtoBuf;
@@ -15,11 +16,11 @@ module laya {
         private buffer: any;
         private m_processStep: number = 0;
         private index:number = 0;
+        
 
         constructor() {
-            Laya.init(600, 400);
+            Laya.init(1000, 800);
 
-            var pb: any = Browser.window.protobuf;
             //pb.load("data/chat.proto", this.onAssetsLoaded);
             //this.connect();
             this.process();
@@ -49,9 +50,16 @@ module laya {
                 this.m_processStep++;
                 break;
                 case 2:
-                this.sendTempleMsg();
-                NetworkManager.getInstance().registerCMD(1, this.handleMsg1);
-                NetworkManager.getInstance().registerCMD(1, this.handleMsg2);
+               // this.sendTempleMsg();
+                NetworkManager.getInstance().DoConnStart();
+               // NetworkManager.getInstance().registerCMD(1, this.handleMsg1);
+               // NetworkManager.getInstance().registerCMD(1, this.handleMsg2);           
+                this.m_processStep++;
+                this.process();
+                break;
+                case 3:
+                //NetworkManager.getInstance().DoConnStop();
+                var battle:Battle = new Battle();
                 this.m_processStep++;
                 break;
             }

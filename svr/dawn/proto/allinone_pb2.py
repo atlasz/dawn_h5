@@ -18,7 +18,7 @@ _sym_db = _symbol_database.Default()
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='allinone.proto',
   package='dawnpb',
-  serialized_pb=_b('\n\x0e\x61llinone.proto\x12\x06\x64\x61wnpb\"\x1f\n\x08\x43hatInfo\x12\x13\n\x0bplayer_name\x18\x01 \x01(\t\"c\n\x07MoveMsg\x12#\n\x08position\x18\x01 \x02(\x0b\x32\x11.dawnpb.PBVector2\x12\r\n\x05speed\x18\x02 \x01(\x02\x12$\n\tdirection\x18\x03 \x01(\x0b\x32\x11.dawnpb.PBVector2\"!\n\tPBVector2\x12\t\n\x01x\x18\x01 \x02(\x02\x12\t\n\x01y\x18\x02 \x02(\x02\"\x8a\x01\n\x07\x43ommand\"\x7f\n\x07\x43mdType\x12\x16\n\x12\x43ONN_CMD_START_REQ\x10\x00\x12\x16\n\x12\x43ONN_CMD_START_RSP\x10\x01\x12\x15\n\x11\x43ONN_CMD_STOP_REQ\x10\x02\x12\x15\n\x11\x43ONN_CMD_STOP_RSP\x10\x03\x12\x16\n\x12\x43ONN_CMD_HEARTBEAT\x10\x04')
+  serialized_pb=_b('\n\x0e\x61llinone.proto\x12\x06\x64\x61wnpb\"\x1f\n\x08\x43hatInfo\x12\x13\n\x0bplayer_name\x18\x01 \x01(\t\"c\n\x07MoveMsg\x12#\n\x08position\x18\x01 \x02(\x0b\x32\x11.dawnpb.PBVector2\x12\r\n\x05speed\x18\x02 \x01(\x02\x12$\n\tdirection\x18\x03 \x01(\x0b\x32\x11.dawnpb.PBVector2\"!\n\tPBVector2\x12\t\n\x01x\x18\x01 \x02(\x02\x12\t\n\x01y\x18\x02 \x02(\x02\"\xcb\x01\n\x07\x43ommand\"\xbf\x01\n\x07\x43mdType\x12\x16\n\x12\x43ONN_CMD_START_REQ\x10\x00\x12\x16\n\x12\x43ONN_CMD_START_RSP\x10\x01\x12\x15\n\x11\x43ONN_CMD_STOP_REQ\x10\x02\x12\x15\n\x11\x43ONN_CMD_STOP_RSP\x10\x03\x12\x16\n\x12\x43ONN_CMD_HEARTBEAT\x10\x04\x12\x10\n\x0c\x42\x41TTLE_START\x10\x65\x12\x0e\n\nBATTLE_END\x10\x66\x12\x11\n\x0cSPAWN_OBJECT\x10\xc9\x01\x12\t\n\x04MOVE\x10\xca\x01\"\x97\x01\n\x0bObjectSpawn\x12\r\n\x05netid\x18\x01 \x02(\x05\x12\x10\n\x08\x61sset_id\x18\x02 \x01(\x05\x12#\n\x08position\x18\x03 \x01(\x0b\x32\x11.dawnpb.PBVector2\x12$\n\tdirection\x18\x04 \x01(\x0b\x32\x11.dawnpb.PBVector2\x12\x1c\n\x14has_client_authority\x18\x05 \x01(\x08')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -50,11 +50,27 @@ _COMMAND_CMDTYPE = _descriptor.EnumDescriptor(
       name='CONN_CMD_HEARTBEAT', index=4, number=4,
       options=None,
       type=None),
+    _descriptor.EnumValueDescriptor(
+      name='BATTLE_START', index=5, number=101,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='BATTLE_END', index=6, number=102,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='SPAWN_OBJECT', index=7, number=201,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='MOVE', index=8, number=202,
+      options=None,
+      type=None),
   ],
   containing_type=None,
   options=None,
-  serialized_start=207,
-  serialized_end=334,
+  serialized_start=208,
+  serialized_end=399,
 )
 _sym_db.RegisterEnumDescriptor(_COMMAND_CMDTYPE)
 
@@ -190,16 +206,77 @@ _COMMAND = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=196,
-  serialized_end=334,
+  serialized_end=399,
+)
+
+
+_OBJECTSPAWN = _descriptor.Descriptor(
+  name='ObjectSpawn',
+  full_name='dawnpb.ObjectSpawn',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='netid', full_name='dawnpb.ObjectSpawn.netid', index=0,
+      number=1, type=5, cpp_type=1, label=2,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='asset_id', full_name='dawnpb.ObjectSpawn.asset_id', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='position', full_name='dawnpb.ObjectSpawn.position', index=2,
+      number=3, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='direction', full_name='dawnpb.ObjectSpawn.direction', index=3,
+      number=4, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='has_client_authority', full_name='dawnpb.ObjectSpawn.has_client_authority', index=4,
+      number=5, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=402,
+  serialized_end=553,
 )
 
 _MOVEMSG.fields_by_name['position'].message_type = _PBVECTOR2
 _MOVEMSG.fields_by_name['direction'].message_type = _PBVECTOR2
 _COMMAND_CMDTYPE.containing_type = _COMMAND
+_OBJECTSPAWN.fields_by_name['position'].message_type = _PBVECTOR2
+_OBJECTSPAWN.fields_by_name['direction'].message_type = _PBVECTOR2
 DESCRIPTOR.message_types_by_name['ChatInfo'] = _CHATINFO
 DESCRIPTOR.message_types_by_name['MoveMsg'] = _MOVEMSG
 DESCRIPTOR.message_types_by_name['PBVector2'] = _PBVECTOR2
 DESCRIPTOR.message_types_by_name['Command'] = _COMMAND
+DESCRIPTOR.message_types_by_name['ObjectSpawn'] = _OBJECTSPAWN
 
 ChatInfo = _reflection.GeneratedProtocolMessageType('ChatInfo', (_message.Message,), dict(
   DESCRIPTOR = _CHATINFO,
@@ -228,6 +305,13 @@ Command = _reflection.GeneratedProtocolMessageType('Command', (_message.Message,
   # @@protoc_insertion_point(class_scope:dawnpb.Command)
   ))
 _sym_db.RegisterMessage(Command)
+
+ObjectSpawn = _reflection.GeneratedProtocolMessageType('ObjectSpawn', (_message.Message,), dict(
+  DESCRIPTOR = _OBJECTSPAWN,
+  __module__ = 'allinone_pb2'
+  # @@protoc_insertion_point(class_scope:dawnpb.ObjectSpawn)
+  ))
+_sym_db.RegisterMessage(ObjectSpawn)
 
 
 # @@protoc_insertion_point(module_scope)

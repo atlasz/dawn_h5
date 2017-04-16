@@ -43,9 +43,8 @@ var dawn;
             for (var idxType = 0; idxType < typeReflection.length; ++idxType) {
                 var oneType = typeReflection[idxType];
                 ProtoLoader.getInstance().m_dicCfgs.add(oneType.name, oneType);
+                console.log(oneType.name, oneType);
             }
-            var cmd = ProtoLoader.getInstance().m_dicCfgs["Command"];
-            console.log(cmd.CmdType.CONN_CMD_START_REQ);
             //test the nested construct
             /*
             var vec2:any = ProtoLoader.getInstance().m_dicCfgs["PBVector2"];
@@ -63,7 +62,9 @@ var dawn;
                     direction:vec2.create({x:-1,y:1})
                 }
             )
-            console.log(move.direction);*/
+            console.log(move.direction);
+            var cmd:any = ProtoLoader.getInstance().m_dicCfgs["Command"];
+            console.log(cmd.CmdType.CONN_CMD_START_REQ);*/
             var evt = new dawn.Event("LoadComplete", null);
             ProtoLoader.getInstance().m_loadEvtDispatcher.dispatchEvent(evt);
         };

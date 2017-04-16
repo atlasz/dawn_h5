@@ -4,6 +4,7 @@ var dawn;
         function NetworkManager() {
             this.m_conn = new dawn.GameConnection();
             this.m_msgHandler = new dawn.Dictionary([]);
+            this.userId = 1;
             if (NetworkManager.m_instance) {
                 throw new Error("Error: Instantiation failed: Use NetworkManager.getInstance() instead of new.");
             }
@@ -17,6 +18,12 @@ var dawn;
         };
         NetworkManager.prototype.connect = function () {
             this.m_conn.connect();
+        };
+        NetworkManager.prototype.DoConnStart = function () {
+            this.m_conn.doConnStart();
+        };
+        NetworkManager.prototype.DoConnStop = function () {
+            this.m_conn.doConnStop();
         };
         NetworkManager.prototype.registerCMD = function (cmd, callback) {
             if (this.m_msgHandler.containsKey(cmd)) {

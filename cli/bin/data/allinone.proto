@@ -27,6 +27,22 @@ message Command {
 	    CONN_CMD_STOP_REQ = 2;
 	    CONN_CMD_STOP_RSP = 3;
 	    CONN_CMD_HEARTBEAT = 4;
-  
+
+	   	//---------------------------------------------
+        // Battle
+        //---------------------------------------------
+  		BATTLE_START = 101;
+  		BATTLE_END = 102;
+
+  		SPAWN_OBJECT = 201;
+  		MOVE = 202;
     }
+}
+
+message ObjectSpawn {
+    required int32 netid = 1;
+    optional int32 asset_id = 2;   
+    optional PBVector2 position = 3;
+    optional PBVector2 direction = 4;
+    optional bool has_client_authority = 5;
 }

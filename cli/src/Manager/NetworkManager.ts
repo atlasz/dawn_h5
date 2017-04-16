@@ -6,6 +6,7 @@ module dawn
         
         private m_conn:GameConnection = new GameConnection();
         private m_msgHandler:Dictionary = new Dictionary([]);
+        public userId:number = 1;
 
         constructor()
         {
@@ -29,6 +30,16 @@ module dawn
         public connect():void
         {
             this.m_conn.connect();
+        }
+
+        public DoConnStart():void
+        {
+            this.m_conn.doConnStart();
+        }
+
+         public DoConnStop():void
+        {
+            this.m_conn.doConnStop();
         }
 
         public registerCMD(cmd:number, callback:Function):void
@@ -99,6 +110,5 @@ module dawn
         {
             this.m_conn.evtDispatcher.removeEventListener(typeStr, listenerFunc);
         }
-        
     }
 }
