@@ -22,14 +22,17 @@ class NetReader(object):
 		protoType.ParseFromString(message)
 
 	def ReadBytes(self, bytelen):
-		if self.CheckCapacity(bytelen):
+		print "ReadBytes pos: %d  len: %d size: %d"%(self.pos, bytelen, self.size)
+		if self.pos + bytelen > self.size:
+			print "ReadBytes failed"
 			return ""
 		bytes = self.buf[self.pos:self.pos + bytelen]
 		self.pos += bytelen
+		print "ReadBytes succ"
 		return bytes
 
 	def IsReadDone(self):
-		print "IsReadDone pos: %d size: %d " %(self.pos, self.size)
+		#print "IsReadDone pos: %d size: %d " %(self.pos, self.size)
 		return self.pos >= self.size
 
 	def CheckCapacity(self, bytelen):
@@ -37,6 +40,8 @@ class NetReader(object):
 			print "pos %d bytelen %d size %d"%(self.pos, bytelen, self.size)
 			return False
 		return True
+	def GetBytes(self):
+		return self.buf[0:self.pos]
 
 class NetWriter(object):
 	"""docstring for NetWriter"""
@@ -48,10 +53,12 @@ class NetWriter(object):
 	def WriteInt(self, val):
 		self.buf += struct.pack("i", val)
 		self.pos += 4
-	def WriteProto(self, protoType):
+	def WriteProto(self, cmd, protoType):
 		message = protoType.SerializeToString()
-		self.buf += message
-		self.pos += len(message)
+		self.WriteInt(4 + len(message))
+		self.WriteInt(cmd)
+		#self.buf += message
+		#self.pos += len(message)
 	def GetBytes(self):
 		return self.buf[0:self.pos]
 		

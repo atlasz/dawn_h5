@@ -2,13 +2,13 @@ package dawnpb;
 
 message ChatInfo {
 	//optional uint32 uid = 1;	      //角色uid
-	optional string player_name = 1;  //玩家姓名
+	required string player_name = 1;  //玩家姓名
 }
 
 message MoveMsg{
 	required PBVector2 position = 1;
-	optional float speed = 2;
-	optional PBVector2 direction = 3;
+	required float speed = 2;
+	required PBVector2 direction = 3;
 }
 
 message PBVector2{
@@ -37,12 +37,15 @@ message Command {
   		SPAWN_OBJECT = 201;
   		MOVE = 202;
     }
+    //required int32 cmd = 1;
+  	//required int32 uid = 2;
+  	//required bytes content = 3;
 }
 
 message ObjectSpawn {
     required int32 netid = 1;
-    optional int32 asset_id = 2;   
-    optional PBVector2 position = 3;
-    optional PBVector2 direction = 4;
-    optional bool has_client_authority = 5;
+    required int32 asset_id = 2;   
+    required PBVector2 position = 3;
+    required PBVector2 direction = 4;
+    required bool has_client_authority = 5;
 }

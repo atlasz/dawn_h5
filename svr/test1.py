@@ -22,6 +22,24 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		dawn.network.session.sessionManager.add_session(session)
 		print dawn.network.session.sessionManager.has_session(session)'''
 
+		'''cmd = dawn.proto.allinone_pb2.Command()
+		cmd.cmd = dawn.proto.allinone_pb2.Command.SPAWN_OBJECT
+		cmd.uid = 1
+		spawn = dawn.proto.allinone_pb2.ObjectSpawn()
+		spawn.netid = 101
+		spawn.asset_id = 2
+		spawn.position.x = 100
+		spawn.position.y = 200
+		spawn.direction.x = 1
+		spawn.direction.y = 2
+		spawn.has_client_authority = True
+		resProto = dawn.proto.allinone_pb2.ChatInfo()
+		resProto.player_name = "hahaha"
+		cmd.content = resProto.SerializeToString()
+		msg = cmd.SerializeToString()
+		print "len: " + str(len(msg))
+		self.write_message(msg, True)'''
+
 	def on_message(self, message):
 		self.handle_message(message)
 		#parser

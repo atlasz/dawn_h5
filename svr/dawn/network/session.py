@@ -11,18 +11,35 @@ class Session():
 		self.uid = uid
 		self.socket = socket
 
+	def sendCmd(self, cmd, proto):
+		write = netbuf.NetWriter()
+		write.WriteInt(99)
+		write.WriteInt(self.uid)
+		write.WriteProto(cmd, proto)
+		bytes = write.GetBytes()
+		print "sendCmd bytes length: %d " %(len(bytes))
+		self.socket.write_message(bytes,True)
+
 	def handbytes(self, reader):
 		con = connection.connectionManager.get_connection(self.uid)
 		con.sid = self.sid
+
 		if con :
+			'''print "reader size:%d "%(reader.size)
+			msgLen = reader.ReadInt()
+			print msgLen
+			bytes = reader.ReadBytes(msgLen)
+			print len(bytes)
+			newReader = netbuf.NetReader(bytes)
+			con.handle_msg(newReader)'''
 			while not reader.IsReadDone() :
-				try:
-					msgLen = reader.ReadInt()
-					bytes = reader.ReadBytes(msgLen)
-					newReader = netbuf.NetReader(bytes)
-					con.handle_msg(newReader)
-				except Exception,e: 
-					print Exception,":",e
+				#try:
+				msgLen = reader.ReadInt()
+				bytes = reader.ReadBytes(msgLen)
+				newReader = netbuf.NetReader(bytes)
+				con.handle_msg(newReader)
+				'''except Exception,e: 
+					print Exception,":",e'''
 	def handleStart(self):
 		write = netbuf.NetWriter()
 		write.WriteInt(dawn.proto.allinone_pb2.Command.CONN_CMD_START_RSP)
@@ -30,7 +47,7 @@ class Session():
 		write.WriteInt(self.uid)
 		print write.buf
 		print write.GetBytes()
-		self.socket.write_message(write.GetBytes())
+		self.socket.write_message(write.GetBytes(), True)
 	def handleStop(self):
 		write = netbuf.NetWriter()
 		write.WriteInt(dawn.proto.allinone_pb2.Command.CONN_CMD_STOP_RSP)
@@ -38,7 +55,7 @@ class Session():
 		write.WriteInt(self.uid)
 		print write.buf
 		print write.GetBytes()
-		self.socket.write_message(write.GetBytes())
+		self.socket.write_message(write.GetBytes(), True)
 		
 class SessionManager():
 	__metaclass__ = dawn.common.common.Singleton
@@ -75,7 +92,7 @@ class SessionManager():
 
 	def get_session(self, uid):
 		if self.has_session(uid):
-			return sessions[uid]
+			return self.sessions[uid]
 		else:
 			return None;
 # todo:

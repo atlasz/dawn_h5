@@ -60,6 +60,8 @@ module laya {
                 case 3:
                 //NetworkManager.getInstance().DoConnStop();
                 var battle:Battle = new Battle();
+                battle.init();
+                battle.enterBattle();
                 this.m_processStep++;
                 break;
             }

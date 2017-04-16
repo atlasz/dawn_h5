@@ -41,8 +41,10 @@ var laya;
                     this.process();
                     break;
                 case 3:
-                    NetworkManager.getInstance().DoConnStop();
+                    //NetworkManager.getInstance().DoConnStop();
                     var battle = new Battle();
+                    battle.init();
+                    battle.enterBattle();
                     this.m_processStep++;
                     break;
             }

@@ -44,8 +44,9 @@ module dawn
         }
 
         private onMessageReveived(message: any): void {
-            console.log("Message from server:");
+            console.log("Message from server length: " + message.length);
             this.unpack(message);
+            //this.m_socket.input.clear();
         }
 
         private onConnectError(e: Event): void {
@@ -55,9 +56,6 @@ module dawn
         public send(data:any):void
         {
             this.m_socket.send(data);
-            //todo 
-            //1.m_socket.flush() when buffer is full
-            //2.m_socket.flush() when client tick end
             this.m_socket.flush();
         }
 
@@ -66,25 +64,38 @@ module dawn
             var buf:Byte = new Byte();
             buf.writeInt32(99);
             buf.writeInt32(NetworkManager.getInstance().userId);
-            buf.writeInt32(message.length);
+            buf.writeInt32(4 + message.length);
             buf.writeInt32(cmd);
             buf.writeArrayBuffer(message);
+            console.log("usrId: " + NetworkManager.getInstance().userId + " msg length: " + message.length
+            + " cmd: " + cmd + " message: " + message);
             return buf;
         }
 
         public unpack(message:any):void
         {
-            //console.log(typeof(message));
-            
+            console.log("unpack: " + typeof(message));
+           // console.log("arraybuff: " + message.buffer);
             this.m_readBuffer.clear();
-            this.m_readBuffer.writeUTFBytes(message);
+            
+           /* this.m_readBuffer.writeUTFBytes(message);
             if(this.m_readBuffer.length < 8)
             {
                 console.log("wrong bytes");
                 return;
-            }
+            }*/
+            this.m_readBuffer.writeArrayBuffer(message, 0, message.length);
             this.m_readBuffer.pos = 0;
 
+           /* var pb:any = ProtoLoader.getInstance().getPbObject("Command");
+            var aaa:any = pb.decode(this.m_readBuffer.getUint8Array(0, this.m_readBuffer.length));
+            console.log("cmd: " + aaa.cmd);
+            console.log("uid: " + aaa.uid);
+            //console.log(typeof(aaa.content));
+
+            var spawnInfo:any = ProtoLoader.getInstance().getPbObject("ObjectSpawn");
+            var info:any = spawnInfo.decode(aaa.content);
+            console.log("netid:" + info.netId);*/
             var cmdType:number = this.m_readBuffer.getInt32();
             var userId:number = this.m_readBuffer.getInt32();
 
@@ -102,16 +113,18 @@ module dawn
                 default:
                 this.handleMsg(this.m_readBuffer);
                 break;
-            }               
+            }  
+            this.conn.m_socket.input.clear();             
         }
 
         private handleMsg(buffer:Byte):void
         {
+            console.log("handleMsg");
             while(buffer.pos < buffer.buffer.byteLength)
             {
-
                 var length:number = buffer.getInt32();
                 var msgType:number = buffer.getInt32();
+                console.log("msgType: " + msgType);
                 var protobuf:any = buffer.getUint8Array(buffer.pos, length);
                 NetworkManager.getInstance().handleMsg(msgType, protobuf);
             }   
