@@ -27,8 +27,8 @@ class Battle():
 			spawnMsg = dawn.proto.allinone_pb2.ObjectSpawn()
 			spawnMsg.netid = i.netId
 			spawnMsg.asset_id = 3
-			spawnMsg.position.x = 10
-			spawnMsg.position.y = 11
+			spawnMsg.position.x = 500
+			spawnMsg.position.y = 500
 			spawnMsg.direction.x = -1
 			spawnMsg.direction.y = 1
 			#spawnMsg.has_client_authority = False

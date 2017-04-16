@@ -57,8 +57,8 @@ class NetWriter(object):
 		message = protoType.SerializeToString()
 		self.WriteInt(4 + len(message))
 		self.WriteInt(cmd)
-		#self.buf += message
-		#self.pos += len(message)
+		self.buf += message
+		self.pos += len(message)
 	def GetBytes(self):
 		return self.buf[0:self.pos]
 		
